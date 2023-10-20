@@ -24,16 +24,14 @@ def ConstantPowerPan(angle, leftSignal, rightSignal, maxAngle = pi, returnAmplit
     amp_R = sin(angle/2) 
 
     #TO na pozniej - bardziej realny efekt
-    '''
     if (amp_R) < 0.15:
         amp_R = 0.15
-    if (amp_R) > 0.85:
-        amp_R = 0.85
+    if (amp_R) > 0.92:
+        amp_R = 0.92
     if (amp_L) < 0.15:
         amp_L = 0.15
-    if (amp_L) > 0.85:
-        amp_L = 0.85
-    '''
+    if (amp_L) > 0.92:
+        amp_L = 0.92
     return Pan(leftSignal, rightSignal, amp_L, amp_R, returnAmplitudes)
 
 def MixedPan(angle, leftSignal, rightSignal, maxAngle = pi, returnAmplitudes = False):
