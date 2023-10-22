@@ -18,8 +18,8 @@ parser.add_argument('output', metavar='output_path', type=str, nargs="?", defaul
                     help='Sciezka, gdzie ma zostac zapisany wynik')
 parser.add_argument('-auto', '--auto', action="store_true",
                     help='Automatycznie ustaw parametry dzwieku przestrzennego')
-parser.add_argument('-a', '--angle', type=int, nargs="?", default=45, choices=range(-90,90+1,5), metavar="0-180, krok 5",
-                    help='Kąt kierunku od sluchacza do zrodla. Liczony jako zakres 0-180 od godziny 9 do 3 zgodnie z ruchem wskazowek.')
+parser.add_argument('-a', '--angle', type=int, nargs="?", default=45, choices=range(-90,90+1,5), metavar="-90 - +90, krok 5",
+                    help='Kąt kierunku od sluchacza do zrodla. Liczony jako zakres -90 do 90 od godziny 9 do 3 zgodnie z ruchem wskazowek.')
 parser.add_argument('-p', '--pan', choices=['cpp','lp'],
                     help='Wykonaj panning cpp lub lp')
 parser.add_argument('-d', '--delay', action="store_true",
