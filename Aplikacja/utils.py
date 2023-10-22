@@ -6,7 +6,7 @@ def muffle(sig, fs, Wn):
     if len(sig) == 0:
         return sig
     #Wn 10k?
-    sos = butter(10, Wn, 'lp', fs=fs, output='sos')
+    sos = butter(6, Wn, 'lp', fs=fs, output='sos')
     filtered = sosfilt(sos, sig)
     filtered = round(filtered).astype(int16)
     return filtered
