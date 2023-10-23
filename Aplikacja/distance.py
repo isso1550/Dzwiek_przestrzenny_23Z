@@ -79,3 +79,33 @@ def ProgressiveDistanceByGain(infile, outfile, step_dist_change, full_iteration_
                 effected = board(chunk, f.samplerate, reset=False)
                 o.write(effected)
         
+def DistanceWithReverb(infile, outfile, distance):
+    from pedalboard import Pedalboard, Reverb, Gain, LowpassFilter, HighShelfFilter, LowShelfFilter, HighpassFilter
+    from pedalboard.io import AudioFile
+    import numpy as np
+
+    # Make a Pedalboard object, containing multiple audio plugins:
+    room_size = 0.0
+    damping = 0.25
+    wet_level = 0.5
+    dry_level = 1.0
+    width = 1.0
+    freeze_mode = 0.0
+
+    gain_change = np.log2(distance)*(-6)
+    # Reverb(room_size, damping, wet_level, dry_level, width, freeze_mode), 
+    board = Pedalboard([Reverb(room_size, damping, wet_level, dry_level, width, freeze_mode),LowShelfFilter(cutoff_frequency_hz=200, gain_db=-gain_change/2), Gain(gain_db=gain_change)])
+    #board = Pedalboard([HighShelfFilter(cutoff_frequency_hz=200, gain_db=-10), Gain(gain_db=-10.0)])
+    #board = Pedalboard([Gain(gain_db=-10.0)])
+
+    # Open an audio file for reading, just like a regular file:
+    with AudioFile(infile) as f:
+    
+        # Open an audio file to write to:
+        with AudioFile(outfile, 'w', f.samplerate, f.num_channels) as o:
+            while f.tell() < f.frames:
+                chunk = f.read(f.samplerate)
+                effected = board(chunk, f.samplerate, reset=False)
+                
+                # Write the output to our output file:
+                o.write(effected)
