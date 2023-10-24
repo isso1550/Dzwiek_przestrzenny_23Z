@@ -3,12 +3,12 @@ from numpy import concatenate, zeros, round
 
 def delay(angle, leftSignal, rightSignal, framerate, headwidth=0.15, speed_of_sound=345):
     if (angle > pi/2):
-        print("todelay = left")
+        #print("todelay = left")
         #Opoznij lewy kanal
         toDelay = leftSignal
         toCopy = rightSignal
     elif (angle < pi/2):
-        print("todelay = right")
+        #print("todelay = right")
         toDelay = rightSignal
         toCopy = leftSignal
         #Opoznij prawy kanal
@@ -22,7 +22,7 @@ def delay(angle, leftSignal, rightSignal, framerate, headwidth=0.15, speed_of_so
     ndelay = (a*headwidth/speed_of_sound) * framerate
     #nframes = len(toDelay)
     ndelay = int(abs(round(ndelay)))
-    print(f"ldel = {ldel},  a = {a} , ndelay = {ndelay}")
+    #print(f"ldel = {ldel},  a = {a} , ndelay = {ndelay}")
 
     
     delayedSig = concatenate((zeros(ndelay), toDelay[:-ndelay])).astype(int16)
@@ -30,6 +30,6 @@ def delay(angle, leftSignal, rightSignal, framerate, headwidth=0.15, speed_of_so
     if (angle > pi/2):
         return delayedSig, toCopy
     else:
-        print("return left, right")
+        #print("return left, right")
         return toCopy, delayedSig
 

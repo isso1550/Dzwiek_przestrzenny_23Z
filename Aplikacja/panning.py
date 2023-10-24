@@ -1,5 +1,5 @@
 from numpy import pi, sin, sqrt, deg2rad, cos, int16
-from numpy import arange, concatenate, flip, ceil , tile, negative, rad2deg
+from numpy import arange, concatenate, flip, ceil , tile, negative, rad2deg, zeros, add, int16, multiply
 import delay
 from utils import muffle
 
@@ -64,6 +64,11 @@ def Pan8d(leftSignal, rightSignal, framerate, step, rot_seconds, method=Constant
     left = leftSignal.copy()
     right = rightSignal.copy()
 
+    left2 = left * 0
+    right2 = right * 0
+    #left2 = zeros(len(leftSignal)+30, dtype = type(leftSignal[0]))
+    #right2 = zeros(len(rightSignal)+30, dtype = type(rightSignal[0]))
+
     #Glowna petla
     #Przesun okno -> przeksztalc wycinek dla odpowiadajacego kata -> dolacz do lacznego sygnalu
     if (method == ConstantPowerPan):
@@ -71,7 +76,22 @@ def Pan8d(leftSignal, rightSignal, framerate, step, rot_seconds, method=Constant
             angle = abs(angles[i])
             
             new_L, new_R = method(angle, left[i*window:(i+1)*window], right[i*window:(i+1)*window], progiMin=progiMin, progiMax=progiMax)
-            #new_L, new_R = delay.delay(angle, new_L, new_R, framerate)
+            #if delaySig:
+                #new_L, new_R = delay.delay(angle, new_L, new_R, framerate)
+                
+                #try:
+                    #left2[i*window:(i*window)+len(new_L)] = add(left2[i*window:(i*window)+len(new_L)], new_L)
+                    #right2[i*window:(i*window)+len(new_R)] = add(right2[i*window:(i*window)+len(new_R)], new_R)
+                #    left2[i*window:(i+1)*window] = new_L[0:window]
+                #    right2[i*window:(i+1)*window] =  new_R[0:window]
+                #except ValueError as e:
+                    #pass
+                    #left2 = concatenate((left2, new_L))
+                    #print(type(left[0]))
+                    #right2 = concatenate((right2, new_R))
+                    #print(e)
+            #else: 
+            left2[i*window:(i+1)*window], right2[i*window:(i+1)*window] = new_L, new_R
             if angles[i] < 0:
                 
                 #Mozna probowac muffle jak jest za sluchaczem, czy zadziala?
@@ -81,13 +101,23 @@ def Pan8d(leftSignal, rightSignal, framerate, step, rot_seconds, method=Constant
                 #new_L = muffle(new_L, framerate, Wn)
                 #new_R = muffle(new_R, framerate, Wn)
                 new_L = new_L
-            left[i*window:(i+1)*window], right[i*window:(i+1)*window] = new_L, new_R
+            #try:
+            #    left[i*window:(i+1)*window], right[i*window:(i+1)*window] = new_L, new_R
+            #except ValueError as e:
+            
+        left = left2
+        right = right2     
     else:
         for i in range(0, len(angles)):
             angle = abs(angles[i])
             
             new_L, new_R = method(angle, left[i*window:(i+1)*window], right[i*window:(i+1)*window])
             left[i*window:(i+1)*window], right[i*window:(i+1)*window] = new_L, new_R
+    #if len(left) < len(right):
+    #    left = concatenate((left, zeros(len(right)-len(left), dtype=int16)))
+    #elif len(left) > len(right):
+    #    right = concatenate((right, zeros(len(left)-len(right), dtype=int16)))
+
     return left, right
 
 

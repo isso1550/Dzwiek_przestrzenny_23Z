@@ -20,16 +20,23 @@
       <div class="form-group">
         <label class="col-md-4 control-label" for="input">Plik wejsciowy</label>
         <div class="col-md-4">
-          <input id="input" name="input" class="input-file" type="file">
+          <input id="input" name="input" class="input-file" type="text">
         </div>
       </div>
       
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="output">Plik wyjsciowy (wynikowy)</label>
+        <div class="col-md-4">
+          <input id="output" name="output" class="output-file" type="text">
+        </div>
+      </div>
+
       <!-- Text input-->
       <div class="form-group">
         <label class="col-md-4 control-label" for="angle">Kąt</label>  
         <div class="col-md-4">
         <div id="angle_picker"></div><br>
-        <input id="angle" name="angle" type="text" placeholder="45" class="form-control input-md" required="">
+        <input id="angle" name="angle" type="text" value="45" class="form-control input-md" required="">
         <span class="help-block">Kąt kierunku od sluchacza do zrodla</span>  
         </div>
       </div>
@@ -40,13 +47,13 @@
         <div class="col-md-4">
         <div class="radio">
           <label for="params_mode-0">
-            <input type="radio" name="params_mode" id="params_mode-0" value="1" checked="checked">
+            <input type="radio" onclick="params_mode_handles(this)" name="params_mode" id="params_mode-0" value="1" checked="checked">
             Ręczny wybór
           </label>
         </div>
         <div class="radio">
           <label for="params_mode-1">
-            <input type="radio" name="params_mode" id="params_mode-1" value="2">
+            <input type="radio" onclick="params_mode_handles(this)" name="params_mode" id="params_mode-1" value="2">
             Automatyczne
           </label>
         </div>
@@ -89,7 +96,7 @@
       <div class="form-group">
         <label class="col-md-4 control-label" for="distance">Odleglosc od zrodla</label>  
         <div class="col-md-4">
-        <input id="distance" name="distance" type="text" placeholder="1" class="form-control input-md">
+        <input id="distance" name="distance" type="text" value="1" class="form-control input-md">
         <span class="help-block">Odleglosc miedzy zrodlem, a sluchaczem [m]</span>  
         </div>
       </div>
@@ -98,7 +105,7 @@
       <div class="form-group">
         <label class="col-md-4 control-label" for="rotdur">Czas trwania obrotu [s]</label>  
         <div class="col-md-4">
-        <input id="rotdur" name="rotdur" type="text" placeholder="10" class="form-control input-md">
+        <input id="rotdur" name="rotdur" type="text" value="10" class="form-control input-md">
         <span class="help-block">Czas trwania pelnego obrotu (360) w trybie 8D</span>  
         </div>
       </div>
@@ -113,14 +120,89 @@
       
       </fieldset>
       </form>
+
+      <p id = "result"></p>
       
     
 
-<script>
-    tmp = document.getElementById("input").baseURI
-    input = tmp.split("file:///")[1]
 
-    document.querySelectorAll('input[name="params_mode"]:checked')[0].value
+
+<script>
+  const angle = document.getElementById("angle")
+  const params_mode_0 = document.getElementById("params_mode-0")
+  const params_mode_1 = document.getElementById("params_mode-1")
+  const mode = document.getElementById("mode")
+  const delaySig_0 = document.getElementById("delaySig-0")
+  const delaySig_1 = document.getElementById("delaySig-1")
+  const distance = document.getElementById("distance") 
+  const rotdur = document.getElementById("rotdur") 
+  const input= document.getElementById("input") 
+  const output = document.getElementById("output") 
+  
+
+  function params_mode_handles(radio){
+    val = radio.value
+    if (val == 1){
+      //reczny
+      mode.disabled = false
+      delaySig_0.disabled = false
+      delaySig_1.disabled = false
+      rotdur.disabled = false
+    } else if (val == 2){
+      //automatyczny
+      mode.value = "cpp"
+      mode.disabled = true
+      delaySig_0.checked = true
+      delaySig_0.disabled = true
+      delaySig_1.disabled = true
+      rotdur.disabled = true
+    }
+  }
+
+  document.getElementById("mode").addEventListener('change', function(e){
+    console.log(document.getElementById("mode").value)
+    val = document.getElementById("mode").value
+    if (val == "hrir"){
+      delaySig_0.checked = true
+      delaySig_0.disabled = true
+      delaySig_1.disabled = true
+      rotdur.disabled = true
+    } else if (val == "create8d"){
+      delaySig_1.checked = true
+      delaySig_0.disabled = true
+      delaySig_1.disabled = true
+      rotdur.disabled = false
+    } else {
+      delaySig_0.checked = false
+      delaySig_0.disabled = false
+      delaySig_1.disabled = false
+      rotdur.disabled = true
+    }
+
+  })
+
+  document.getElementById("generate").addEventListener('click', function(e){
+    e.preventDefault()
+    var command = "python main.py"
+    if (mode.value == "hrir"){
+      command += " -hrir"
+      command += " -a " + angle.value
+    } else if (mode.value == "create8d"){
+      command += " -c8d"
+      commnad += " -rd " + rotdur.value  
+    } else {
+      command += " -p " + mode.value
+      command += " -a " + angle.value
+      if (delaySig_0.checked){
+        command += " -d"
+      }
+    }
+    command += " -ds " + distance.value
+    command += " " + input.value
+    command += " " + output.value
+    document.getElementById("result").innerHTML = command
+    console.log(command)
+  })
 </script>
 
 <script>
@@ -160,6 +242,10 @@
     width:100px;
     height:100px;
     margin-bottom:15px;
+  }
+  #result{
+    margin: left 25px;
+    font-size: 30px;
   }
 </style>
 </html>

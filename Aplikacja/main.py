@@ -30,6 +30,8 @@ parser.add_argument('-c8d', '--create8d', action="store_true",
                     help='Wykonaj panning 8D')
 parser.add_argument('-rd', '--rotdur', type=int, nargs="?", default=15,
                     help='Czas trwania obrotu w dzwieku 8d')
+parser.add_argument('-ds', '--distance', type=int, nargs="?", default=1,
+                    help='Odleglosc zrodla od sluchacza [m]')
 
 
 args = parser.parse_args()
@@ -37,7 +39,7 @@ args = parser.parse_args()
 input = args.input
 output = args.output
 
-distance_from_source = 1
+distance_from_source = args.distance
 if (args.auto):
     pan_method = "cpp"
     delaySig = True
