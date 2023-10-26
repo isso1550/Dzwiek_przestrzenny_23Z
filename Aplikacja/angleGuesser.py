@@ -11,7 +11,7 @@ def guessAngle(filename):
         l = max(left)
         r = max(right)
         angle = arctan(r/l)*2
-        angle = 90-rad2deg(angle)
+        angle = abs(90-rad2deg(angle))
         if (l>r):
             angle = angle * -1
         print(f"Przypuszczenie na podstawie roznic w amplitudach przy zalozeniu CPP: {angle}")
@@ -22,7 +22,7 @@ def guessAngle(filename):
         #Dziala duzo lepiej dla LP
         angle = pi/(l/r + 1)
         angle = rad2deg(angle)
-        angle = 90 - angle
+        angle = abs(90 - angle)
         if (l>r):
             angle = angle * -1
         print(f"Przypuszczenie na podstawie roznic w amplitudach przy zalozeniu LP: {angle}")

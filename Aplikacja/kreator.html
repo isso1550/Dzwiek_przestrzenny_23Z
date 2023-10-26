@@ -40,6 +40,24 @@
         <span class="help-block">Kąt kierunku od sluchacza do zrodla</span>  
         </div>
       </div>
+      <!-- Tryb pracy -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="work_mode">Tryb pracy</label>
+        <div class="col-md-4">
+        <div class="radio">
+          <label for="work_mode-0">
+            <input type="radio" onclick="work_mode_handles(this)" name="work_mode" id="work_mode-0" value="1" checked="checked">
+            Modyfikacja pliku
+          </label>
+        </div>
+        <div class="radio">
+          <label for="work_mode-1">
+            <input type="radio" onclick="work_mode_handles(this)" name="work_mode" id="work_mode-1" value="2">
+            Predykcja ustawień pliku
+          </label>
+        </div>
+        </div>
+      </div>
       
       <!-- Multiple Radios -->
       <div class="form-group">
@@ -132,6 +150,8 @@
   const params_mode_0 = document.getElementById("params_mode-0")
   const params_mode_1 = document.getElementById("params_mode-1")
   const mode = document.getElementById("mode")
+  const workMode_0 = document.getElementById("work_mode-0")
+  const workMode_1 = document.getElementById("work_mode-1")
   const delaySig_0 = document.getElementById("delaySig-0")
   const delaySig_1 = document.getElementById("delaySig-1")
   const distance = document.getElementById("distance") 
@@ -148,6 +168,8 @@
       delaySig_0.disabled = false
       delaySig_1.disabled = false
       rotdur.disabled = false
+      
+
     } else if (val == 2){
       //automatyczny
       mode.value = "cpp"
@@ -156,6 +178,35 @@
       delaySig_0.disabled = true
       delaySig_1.disabled = true
       rotdur.disabled = true
+      
+    }
+  }
+
+  function work_mode_handles(radio){
+    val = radio.value
+    if (val == 1){
+      //modyfikacja
+      mode.disabled = false
+      delaySig_0.disabled = false
+      delaySig_1.disabled = false
+      rotdur.disabled = false
+      params_mode_0.disabled = false
+      params_mode_1.disabled = false
+      distance.disabled = false
+      output.disabled = false
+      angle.disabled = false
+    } else if (val == 2){
+      //predykcja
+      mode.disabled = true
+      delaySig_0.checked = true
+      delaySig_0.disabled = true
+      delaySig_1.disabled = true
+      rotdur.disabled = true
+      params_mode_0.disabled = true
+      params_mode_1.disabled = true
+      distance.disabled = true
+      output.disabled = true
+      angle.disabled = true
     }
   }
 
@@ -184,6 +235,13 @@
   document.getElementById("generate").addEventListener('click', function(e){
     e.preventDefault()
     var command = "python main.py"
+    if (workMode_1.checked){
+      command += " --guess"
+      command += " " + input.value
+      document.getElementById("result").innerHTML = command
+      console.log(command)
+      return
+    }
     if (mode.value == "hrir"){
       command += " -hrir"
       command += " -a " + angle.value
