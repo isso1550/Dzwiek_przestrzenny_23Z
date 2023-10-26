@@ -3,6 +3,7 @@ import panning
 import delay
 import distance
 import hrir
+import angleGuesser
 import argparse
 from numpy import pi, rad2deg, deg2rad
 
@@ -32,12 +33,19 @@ parser.add_argument('-rd', '--rotdur', type=int, nargs="?", default=15,
                     help='Czas trwania obrotu w dzwieku 8d')
 parser.add_argument('-ds', '--distance', type=int, nargs="?", default=1,
                     help='Odleglosc zrodla od sluchacza [m]')
+parser.add_argument('-gs', '--guess', action="store_true",
+                    help="Tryb zgadywania kierunku do źródla")
 
 
 args = parser.parse_args()
 
 input = args.input
 output = args.output
+
+guess = args.guess
+if(guess):
+    angleGuesser.guessAngle(input)
+    exit()
 
 distance_from_source = args.distance
 if (args.auto):
@@ -96,6 +104,10 @@ if pan_method != None:
     else:
         print("Podany kąt odpowiada prostemu kierunkowi, podaj inny kąt!")
         exit()
+        
+elif (delaySig):
+        left, right = delay.delay(angle, left, right, fs)
+        filemanager.saveStereoSignal(obj, left, right, output)
 
 if create8d:
     left,right = panning.Pan8d(left, right, obj.getframerate(), 5, rotation_duration_8d, panning.ConstantPowerPan, progiMin=True,progiMax=True)

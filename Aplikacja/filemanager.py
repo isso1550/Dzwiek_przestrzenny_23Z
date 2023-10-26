@@ -10,8 +10,9 @@ def loadSignal(filename):
 def getStereoChannels(fr, obj):
     nchannels = obj.getnchannels()
     if nchannels > 1:
-        left = fr[1::2]
-        right = fr[::2]
+    #Zamienione kanaly, we wczesniejszych wersjach prawdopodobnie bylo na odwrot!!!
+        left = fr[::2]
+        right = fr[1::2]
     else:
         left = right = fr
     return left, right
