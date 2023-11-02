@@ -2,6 +2,7 @@ numpy
 matplotlib
 scipy
 IPython
+argparse
 librosa
 soundfile
 pedalboard

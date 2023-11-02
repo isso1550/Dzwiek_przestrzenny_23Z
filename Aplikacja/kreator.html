@@ -140,6 +140,7 @@
       </form>
 
       <p id = "result"></p>
+      <p id = "result2"></p>
       
     
 
@@ -234,7 +235,7 @@
 
   document.getElementById("generate").addEventListener('click', function(e){
     e.preventDefault()
-    var command = "python main.py"
+    var command = ""
     if (workMode_1.checked){
       command += " --guess"
       command += " " + input.value
@@ -247,7 +248,7 @@
       command += " -a " + angle.value
     } else if (mode.value == "create8d"){
       command += " -c8d"
-      commnad += " -rd " + rotdur.value  
+      command += " -rd " + rotdur.value  
     } else {
       command += " -p " + mode.value
       command += " -a " + angle.value
@@ -258,7 +259,10 @@
     command += " -ds " + distance.value
     command += " " + input.value
     command += " " + output.value
-    document.getElementById("result").innerHTML = command
+    output1 = "python DzwiekPrzestrzenny.py " + command
+    document.getElementById("result").innerHTML = output1
+    output2 = "./DzwiekPrzestrzenny.exe " + command
+    document.getElementById("result2").innerHTML = output2
     console.log(command)
   })
 </script>
@@ -301,7 +305,7 @@
     height:100px;
     margin-bottom:15px;
   }
-  #result{
+  #result, #result2{
     margin: left 25px;
     font-size: 30px;
   }
