@@ -14,10 +14,9 @@ def DistanceByGain(infile, outfile, distance):
 
 def DistanceByGainHighshelf(infile, outfile, distance):
     gain_change = np.log2(distance)*(-6)
-    print(f"gain_change = {gain_change}")
+    #print(f"gain_change = {gain_change}")
 
-    #Do zbadania!
-    board = Pedalboard([HighShelfFilter(cutoff_frequency_hz=200, gain_db=gain_change/2), Gain(gain_db=gain_change)])
+    #board = Pedalboard([HighShelfFilter(cutoff_frequency_hz=200, gain_db=gain_change/2), Gain(gain_db=gain_change)])
     board = Pedalboard([LowShelfFilter(cutoff_frequency_hz=200, gain_db=-gain_change/2), Gain(gain_db=gain_change)])
     with AudioFile(infile) as f:
         with AudioFile(outfile, 'w', f.samplerate, f.num_channels) as o:
